@@ -1,12 +1,11 @@
-# ZhiCrawler
+# ZhiCrawler   
 Fetch subscribed statuses from zhihu and send customed content automatically.
-# Usage(not now)
+# Usage(not now)  
 # Support
-Python 3(Currently)
+Python 3(Currently)  
 # Dependency
 requests
 # Todo
-* Support both phone_num and email login
-* Parse feed-items(statuses) to a format that fits for email    
-* Refactor code to have function-level abstraction   
-* Separate configuration from code  
+* Parse feed-items(statuses) to a format that fits for email and send mail in html format    
+* Separate configuration from code using yaml
+* Use multithread to be manageable during long, long process

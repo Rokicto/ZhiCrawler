@@ -9,3 +9,4 @@ requests
 * Parse feed-items(statuses) to a format that fits for email and send mail in html format    
 * Handle exception (eg. HTTPError)
 * Use multithread to be manageable during long, long process
+* Real-world refactorization :)

@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import re
 import json
 import smtplib
@@ -36,3 +37,8 @@ class Crawler(object):
     def something(self):
         pass
         
+=======
+# coding: utf-8
+from . import settings
+from .base import *
+>>>>>>> refs/remotes/origin/Rokic-patch-2

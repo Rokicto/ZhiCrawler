@@ -1,9 +1,12 @@
 import re
 import json
 import smtplib
+from time import sleep
 
 import requests
 from bs4 import BeautifulSoup
+
+from .models import *
 
 
 class CrawlerException(Exception):
@@ -20,23 +23,51 @@ class UserNotExist(LoginException):
 
 class PasswordMismatch(LoginException):
     pass
-    
-    
+
+
+class RetryFail(CrawlerException):
+    pass
+
+
 class TaskException(Exception):
     pass
+
+
+def retry_when_fail(act, attempt=3, interval=1):
+    def _act(*args, **kargs):
+        nonlocal attempt, interval
+        for i in range(attemp):
+            sleep(inerval)
+            try:
+                ret = act(*args, **kargs)
+            except:
+                continue
+            finally:
+                return ret
+        raise RetryFail
+    return _act
 
 
 class Crawler(object):
     def __init__(self):
         self._root_url = "http://www.zhihu.com/"
         self._cookies = {}
+        self._session = requests.Session()
         self.has_logged = False
     
+    @property
+    def cookies(self):
+        return self._cookies
+        
+    @property
+    def session(self):
+        return self._session
+    
     def login(self):
-        r = requests.get(self._root_url)
+        r = self._session.get(self._root_url)
         soup = BeautifulSoup(r.content, "lxml")
         xsrf = soup.find("input", {"name":"_xsrf"}).get("value")
-        r = requests.post(self._root_url+"login/email", {
+        r = self._session.post(self._root_url+"login/email", {
             "_xsrf": xsrf,
             "email": settings.SPIDER_ACCOUNT,
             "password": settings.SPIDER_PASSWORD,
@@ -59,13 +90,21 @@ class Crawler(object):
             ret = func(self, *args)
             return ret
         return _func
-        
+    
+    @retry_when_fail
     def get_topic(self, id):
+        r = self._session.get(_root_url+"topic/"+str(id))
+        return None
+    
+    @retry_when_fail
+    def get_question(self, id):
         pass
-        
+    
+    @retry_when_fail
     def get_anwswer(self, id):
         pass
-        
+    
+    @retry_when_fail     
     def get_user(self, id):
         pass
         
